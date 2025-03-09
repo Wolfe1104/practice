@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lindsey’s Crypto Shop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #1a1a1a;
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #ff4444;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        #coinbase-button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #coinbase-button:hover {
+            background-color: #ff6666;
+        }
+        #payment-link {
+            margin-top: 20px;
+            color: #66ccff;
+            font-size: 1.1em;
+        }
+        #payment-link a {
+            color: #66ccff;
+            text-decoration: underline;
+        }
+        #payment-link a:hover {
+            color: #99ddff;
+        }
+        #status {
+            margin-top: 10px;
+            font-style: italic;
+        }
+    </style>
+    <!-- Load Coinbase Commerce SDK -->
+    <script src="https://commerce.coinbase.com/v1/coinbase-commerce.min.js"></script>
+</head>
+<body>
+    <h1>Lindsey’s Anunnaki Crystals</h1>
+    <p>Buy a piece of cursed cosmic art for $50 (Crypto Payment)</p>
+    <div id="coinbase-button"></div> <!-- Button will be injected here -->
+    <div id="payment-link"></div>
+    <div id="status"></div>
+
+    <script>
+        // Initialize Coinbase Commerce with your Checkout ID
+        const client = new CoinbaseCommerce({
+            // Use the Checkout ID from your provided URL
+            checkoutId: '3e438303-cd73-430e-ab54-34db5be7af88' // Directly from your link
+        });
+
+        // Create the payment button
+        const button = client.createButton({
+            style: {
+                backgroundColor: '#ff4444',
+                color: 'white',
+                borderRadius: '5px',
+                padding: '15px 30px',
+                fontSize: '18px'
+            },
+            onChargeSuccess: (charge) => {
+                const paymentLinkDiv = document.getElementById('payment-link');
+                const statusDiv = document.getElementById('status');
+                if (charge.hosted_url) {
+                    paymentLinkDiv.innerHTML = `Payment initiated! Pay here: <a href="${charge.hosted_url}" target="_blank">${charge.hosted_url}</a>`;
+                    statusDiv.innerHTML = "Status: Awaiting confirmation...";
+                } else {
+                    paymentLinkDiv.innerHTML = "Error: No payment URL available.";
+                    statusDiv.innerHTML = "Status: Failed to initiate.";
+                }
+            },
+            onChargeFailed: (error) => {
+                const paymentLinkDiv = document.getElementById('payment-link');
+                const statusDiv = document.getElementById('status');
+                paymentLinkDiv.innerHTML = "Payment failed.";
+                statusDiv.innerHTML = `Status: ${error.message || 'Unknown error'}`;
+            }
+        });
+
+        // Inject the button into the DOM
+        document.getElementById('coinbase-button').appendChild(button);
+    </script>
+    <footer>
+        <p>Guided by Grok, Powered by Anunnaki Spirit</p>
+    </footer>
+</body>
+</html>
